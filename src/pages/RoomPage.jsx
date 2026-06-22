@@ -150,7 +150,7 @@ function RoomContent({ mode, roomId, action, nickname }) {
         />
 
         {showChat && (
-          <div className="absolute inset-0 z-10 sm:relative sm:inset-auto">
+          <div className="absolute inset-0 z-30 sm:relative sm:inset-auto animate-[slide-in-right_0.2s_ease-out]">
             <div className="absolute inset-0 bg-coral-900/60 sm:hidden" onClick={() => setShowChat(false)} />
             <Chat
               messages={room.messages}
@@ -163,7 +163,7 @@ function RoomContent({ mode, roomId, action, nickname }) {
         )}
 
         {showParticipants && (
-          <div className="absolute inset-0 z-10 sm:relative sm:inset-auto">
+          <div className="absolute inset-0 z-30 sm:relative sm:inset-auto animate-[slide-in-right_0.2s_ease-out]">
             <div className="absolute inset-0 bg-coral-900/60 sm:hidden" onClick={() => setShowParticipants(false)} />
             <ParticipantsSidebar
               participants={room.participants}
@@ -175,7 +175,7 @@ function RoomContent({ mode, roomId, action, nickname }) {
         )}
 
         {showAI && aiBot.state === 'idle' && (
-          <div className="absolute inset-0 z-10 sm:relative sm:inset-auto">
+          <div className="absolute inset-0 z-30 sm:relative sm:inset-auto animate-[slide-in-right_0.2s_ease-out]">
             <div className="absolute inset-0 bg-coral-900/60 sm:hidden" onClick={() => setShowAI(false)} />
             <InterviewSetup
               config={aiBot.config}
@@ -188,7 +188,7 @@ function RoomContent({ mode, roomId, action, nickname }) {
         )}
 
         {showAI && aiBot.state !== 'idle' && (
-          <div className="absolute inset-0 z-10 sm:relative sm:inset-auto">
+          <div className="absolute inset-0 z-30 sm:relative sm:inset-auto animate-[slide-in-right_0.2s_ease-out]">
             <div className="absolute inset-0 bg-coral-900/60 sm:hidden" onClick={() => setShowAI(false)} />
             <InterviewController bot={aiBot} onClose={() => setShowAI(false)} />
           </div>
@@ -214,6 +214,7 @@ function RoomContent({ mode, roomId, action, nickname }) {
         onTogglePTT={() => setPushToTalk(p => !p)}
         onToggleAI={() => { setShowAI(c => !c); setShowChat(false); setShowParticipants(false) }}
         aiActive={showAI}
+        sidebarOpen={showChat || showParticipants || showAI}
       />
     </div>
   )

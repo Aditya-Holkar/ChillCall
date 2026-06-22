@@ -6,11 +6,12 @@ export default function Controls({
   onToggleChat, onToggleParticipants, onRaiseHand,
   onToggleRecording, onToggleLayout, speakerLayout,
   pushToTalk, onTogglePTT, onToggleAI, aiActive,
+  sidebarOpen,
 }) {
   return (
     <>
       {/* Mobile: vertical floating column */}
-      <div className="sm:hidden fixed right-3 top-1/2 -translate-y-1/2 z-20 flex flex-col items-center gap-2 p-2 rounded-2xl bg-coral-50/90 dark:bg-coral-900/90 backdrop-blur-md shadow-xl">
+      <div className={`sm:hidden fixed right-3 top-1/2 -translate-y-1/2 z-20 flex flex-col items-center gap-2 p-2 rounded-2xl bg-coral-50/90 dark:bg-coral-900/90 backdrop-blur-md shadow-xl transition-opacity duration-200 ${sidebarOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
         <ControlButton
           icon={isMicMuted ? MicOff : Mic}
           active={!isMicMuted}
