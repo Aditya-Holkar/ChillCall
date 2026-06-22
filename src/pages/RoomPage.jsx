@@ -134,7 +134,7 @@ function RoomContent({ mode, roomId, action, nickname }) {
 
   return (
     <div className="h-screen flex flex-col bg-coral-900">
-      <div className="flex-1 flex overflow-hidden relative min-h-0">
+      <div className="flex-1 flex overflow-hidden relative min-h-0 p-1 sm:p-3">
         <RecordingIndicator
           isRecording={room.isRecording}
           blob={recordingBlob}
