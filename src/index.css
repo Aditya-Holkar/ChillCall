@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --color-coral-50: #FFF0BE;
+  --color-coral-100: #FFD6A6;
+  --color-coral-200: #FFB399;
+  --color-coral-300: #FF9A86;
+  --color-coral-400: #E07A6E;
+  --color-coral-500: #C05C54;
+  --color-coral-600: #8B3F39;
+  --color-coral-700: #5C2824;
+  --color-coral-800: #331614;
+  --color-coral-900: #1A0908;
+}
+
+@layer base {
+  body {
+    @apply bg-coral-50 text-coral-800;
+  }
+  .dark body {
+    @apply bg-coral-900 text-coral-50;
+  }
+}
