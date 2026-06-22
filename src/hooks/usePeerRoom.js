@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import Peer from 'peerjs'
+import { getUserMediaWithRetry } from '../lib/media'
 
 export function usePeerRoom() {
   const peerRef = useRef(null)
@@ -153,7 +154,7 @@ export function usePeerRoom() {
     setError(null)
     localStorage.setItem('chillcall-nick', displayName)
 
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+    const stream = await getUserMediaWithRetry({ video: true, audio: true })
     localStreamRef.current = stream
 
     const roomId = Math.random().toString(36).substring(2, 8)
@@ -217,7 +218,7 @@ export function usePeerRoom() {
     setError(null)
     localStorage.setItem('chillcall-nick', displayName)
 
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+    const stream = await getUserMediaWithRetry({ video: true, audio: true })
     localStreamRef.current = stream
 
     const myId = Math.random().toString(36).substring(2, 12)

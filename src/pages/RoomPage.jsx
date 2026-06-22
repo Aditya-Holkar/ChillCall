@@ -89,7 +89,7 @@ function RoomContent({ mode, roomId, action, nickname }) {
     if (errLower.startsWith('notallowederror')) {
       tip = 'Camera/microphone permission was denied. Check your browser/phone settings and ensure camera & mic are allowed for this site. Clear site permissions and try again, or restart your browser.'
     } else if (errLower.startsWith('notreadableerror')) {
-      tip = 'Your camera or microphone is being used by another app or tab. Close other apps/tabs using the camera/mic and try again. On mobile, make sure no other app is accessing the camera.'
+      tip = 'Your camera or microphone is busy. On mobile: close other apps using the camera (like FaceTime, WhatsApp, camera app). Also try closing other browser tabs, restarting your browser, or granting the site camera/mic permissions again in settings.'
     } else if (errLower.startsWith('notfounderror')) {
       tip = 'No camera or microphone detected. Plug in a device and try again. On mobile, ensure your device has a working camera and mic.'
     } else if (errLower.startsWith('aborterror')) {

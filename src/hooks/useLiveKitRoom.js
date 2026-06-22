@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { Room, RoomEvent, RemoteParticipant, Track, createLocalTracks } from 'livekit-client'
 import { createLiveKitToken, generateRoomId } from '../lib/livekit-token'
+import { sleep } from '../lib/media'
 
 export function useLiveKitRoom() {
   const roomRef = useRef(null)
@@ -147,7 +148,20 @@ export function useLiveKitRoom() {
     try {
       await room.connect(url, token, { autoSubscribe: true })
 
-      const tracks = await createLocalTracks({ audio: true, video: true })
+      let tracks
+      for (let attempt = 0; attempt <= 3; attempt++) {
+        try {
+          tracks = await createLocalTracks({ audio: true, video: true })
+          break
+        } catch (err) {
+          if (attempt < 3 && err.name === 'NotReadableError') {
+            await sleep(500 * (attempt + 1))
+            continue
+          }
+          throw err
+        }
+      }
+      if (!tracks) throw new Error('Could not start video source')
       localTracksRef.current = tracks
       tracks.forEach(track => {
         if (track.kind === Track.Kind.Video || track.kind === Track.Kind.Audio) {
@@ -270,7 +284,21 @@ export function useLiveKitRoom() {
 
     try {
       await room.connect(url, token, { autoSubscribe: true })
-      const tracks = await createLocalTracks({ audio: true, video: true })
+
+      let tracks
+      for (let attempt = 0; attempt <= 3; attempt++) {
+        try {
+          tracks = await createLocalTracks({ audio: true, video: true })
+          break
+        } catch (err) {
+          if (attempt < 3 && err.name === 'NotReadableError') {
+            await sleep(500 * (attempt + 1))
+            continue
+          }
+          throw err
+        }
+      }
+      if (!tracks) throw new Error('Could not start video source')
       localTracksRef.current = tracks
       tracks.forEach(track => {
         room.localParticipant?.publishTrack(track)

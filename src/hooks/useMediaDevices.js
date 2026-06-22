@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { getUserMediaWithRetry } from '../lib/media'
 
 export function useMediaDevices() {
   const [devices, setDevices] = useState({ cameras: [], mics: [] })
@@ -25,7 +26,7 @@ export function useMediaDevices() {
   const startPreview = useCallback(async () => {
     stopPreview()
     try {
-      const s = await navigator.mediaDevices.getUserMedia({
+      const s = await getUserMediaWithRetry({
         video: selectedCam ? { deviceId: { exact: selectedCam } } : true,
         audio: selectedMic ? { deviceId: { exact: selectedMic } } : true,
       })
