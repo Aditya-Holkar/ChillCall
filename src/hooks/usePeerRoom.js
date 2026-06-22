@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import Peer from 'peerjs'
-import { getUserMediaWithRetry } from '../lib/media'
+import { getUserMediaBestEffort } from '../lib/media'
 
 export function usePeerRoom() {
   const peerRef = useRef(null)
@@ -154,8 +154,9 @@ export function usePeerRoom() {
     setError(null)
     localStorage.setItem('chillcall-nick', displayName)
 
-    const stream = await getUserMediaWithRetry({ video: true, audio: true })
+    const { stream, hasVideo } = await getUserMediaBestEffort()
     localStreamRef.current = stream
+    if (!hasVideo) setIsCamOff(true)
 
     const roomId = Math.random().toString(36).substring(2, 8)
     peerRef.current = new Peer(roomId)
@@ -167,7 +168,7 @@ export function usePeerRoom() {
             id: peerRef.current.id,
             stream,
             displayName,
-            isMuted: false, isVideoOff: false, isSpeaking: false,
+            isMuted: false, isVideoOff: !hasVideo, isSpeaking: false,
             raisedHand: false, isHost: true, isLocal: true,
           }]
           updateParticipants()
@@ -184,7 +185,7 @@ export function usePeerRoom() {
           })
 
           peerRef.current.on('call', call => {
-            call.answer(stream)
+            if (stream) call.answer(stream)
             mediaCallsRef.current.set(call.peer, call)
             call.on('stream', remoteStream => {
               const p = participantsRef.current.find(x => x.id === call.peer)
@@ -218,8 +219,9 @@ export function usePeerRoom() {
     setError(null)
     localStorage.setItem('chillcall-nick', displayName)
 
-    const stream = await getUserMediaWithRetry({ video: true, audio: true })
+    const { stream, hasVideo } = await getUserMediaBestEffort()
     localStreamRef.current = stream
+    if (!hasVideo) setIsCamOff(true)
 
     const myId = Math.random().toString(36).substring(2, 12)
     peerRef.current = new Peer(myId)
@@ -231,7 +233,7 @@ export function usePeerRoom() {
             id: myId,
             stream,
             displayName,
-            isMuted: false, isVideoOff: false, isSpeaking: false,
+            isMuted: false, isVideoOff: !hasVideo, isSpeaking: false,
             raisedHand: false, isHost: false, isLocal: true,
           }]
           updateParticipants()
@@ -244,7 +246,7 @@ export function usePeerRoom() {
           conn.on('data', handleDataMessage)
 
           peerRef.current.on('call', call => {
-            call.answer(stream)
+            if (stream) call.answer(stream)
             mediaCallsRef.current.set(call.peer, call)
             call.on('stream', remoteStream => {
               const p = participantsRef.current.find(x => x.id === call.peer)

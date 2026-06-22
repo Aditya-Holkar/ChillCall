@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, useLocation, useNavigate } from 'react-router-dom'
 import { usePeerRoom } from '../hooks/usePeerRoom'
 import { useLiveKitRoom } from '../hooks/useLiveKitRoom'
@@ -150,36 +150,48 @@ function RoomContent({ mode, roomId, action, nickname }) {
         />
 
         {showChat && (
-          <Chat
-            messages={room.messages}
-            onSendMessage={room.sendMessage}
-            onSendFile={room.sendFile}
-            onSendReaction={room.sendReaction}
-            onClose={() => setShowChat(false)}
-          />
+          <div className="absolute inset-0 z-10 sm:relative sm:inset-auto">
+            <div className="absolute inset-0 bg-coral-900/60 sm:hidden" onClick={() => setShowChat(false)} />
+            <Chat
+              messages={room.messages}
+              onSendMessage={room.sendMessage}
+              onSendFile={room.sendFile}
+              onSendReaction={room.sendReaction}
+              onClose={() => setShowChat(false)}
+            />
+          </div>
         )}
 
         {showParticipants && (
-          <ParticipantsSidebar
-            participants={room.participants}
-            onClose={() => setShowParticipants(false)}
-            onMuteParticipant={room.muteParticipant}
-            isHost={room.participants[0]?.isHost}
-          />
+          <div className="absolute inset-0 z-10 sm:relative sm:inset-auto">
+            <div className="absolute inset-0 bg-coral-900/60 sm:hidden" onClick={() => setShowParticipants(false)} />
+            <ParticipantsSidebar
+              participants={room.participants}
+              onClose={() => setShowParticipants(false)}
+              onMuteParticipant={room.muteParticipant}
+              isHost={room.participants[0]?.isHost}
+            />
+          </div>
         )}
 
         {showAI && aiBot.state === 'idle' && (
-          <InterviewSetup
-            config={aiBot.config}
-            setConfig={aiBot.setConfig}
-            onStart={() => { aiBot.startInterview(); setShowAI(true) }}
-            onClose={() => setShowAI(false)}
-            participants={room.participants}
-          />
+          <div className="absolute inset-0 z-10 sm:relative sm:inset-auto">
+            <div className="absolute inset-0 bg-coral-900/60 sm:hidden" onClick={() => setShowAI(false)} />
+            <InterviewSetup
+              config={aiBot.config}
+              setConfig={aiBot.setConfig}
+              onStart={() => { aiBot.startInterview(); setShowAI(true) }}
+              onClose={() => setShowAI(false)}
+              participants={room.participants}
+            />
+          </div>
         )}
 
         {showAI && aiBot.state !== 'idle' && (
-          <InterviewController bot={aiBot} onClose={() => setShowAI(false)} />
+          <div className="absolute inset-0 z-10 sm:relative sm:inset-auto">
+            <div className="absolute inset-0 bg-coral-900/60 sm:hidden" onClick={() => setShowAI(false)} />
+            <InterviewController bot={aiBot} onClose={() => setShowAI(false)} />
+          </div>
         )}
       </div>
 

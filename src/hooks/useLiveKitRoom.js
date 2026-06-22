@@ -149,19 +149,26 @@ export function useLiveKitRoom() {
       await room.connect(url, token, { autoSubscribe: true })
 
       let tracks
-      for (let attempt = 0; attempt <= 3; attempt++) {
+      let hasVideo = true
+      for (let attempt = 0; attempt <= 5; attempt++) {
         try {
-          tracks = await createLocalTracks({ audio: true, video: true })
+          tracks = await createLocalTracks({ audio: true, video: hasVideo })
           break
         } catch (err) {
           if (attempt < 3 && err.name === 'NotReadableError') {
-            await sleep(500 * (attempt + 1))
+            await sleep(300 * (attempt + 1))
+            continue
+          }
+          if (attempt === 3 && hasVideo) {
+            hasVideo = false
+            await sleep(300)
             continue
           }
           throw err
         }
       }
-      if (!tracks) throw new Error('Could not start video source')
+      if (!tracks) throw new Error('Could not start audio source')
+      if (!hasVideo) setIsCamOff(true)
       localTracksRef.current = tracks
       tracks.forEach(track => {
         if (track.kind === Track.Kind.Video || track.kind === Track.Kind.Audio) {
@@ -178,7 +185,7 @@ export function useLiveKitRoom() {
         displayName: displayName,
         stream: localStream,
         isMuted: false,
-        isVideoOff: false,
+        isVideoOff: !hasVideo,
         isSpeaking: false,
         raisedHand: false,
         isHost: true, isLocal: true,
@@ -286,19 +293,26 @@ export function useLiveKitRoom() {
       await room.connect(url, token, { autoSubscribe: true })
 
       let tracks
-      for (let attempt = 0; attempt <= 3; attempt++) {
+      let hasVideo = true
+      for (let attempt = 0; attempt <= 5; attempt++) {
         try {
-          tracks = await createLocalTracks({ audio: true, video: true })
+          tracks = await createLocalTracks({ audio: true, video: hasVideo })
           break
         } catch (err) {
           if (attempt < 3 && err.name === 'NotReadableError') {
-            await sleep(500 * (attempt + 1))
+            await sleep(300 * (attempt + 1))
+            continue
+          }
+          if (attempt === 3 && hasVideo) {
+            hasVideo = false
+            await sleep(300)
             continue
           }
           throw err
         }
       }
-      if (!tracks) throw new Error('Could not start video source')
+      if (!tracks) throw new Error('Could not start audio source')
+      if (!hasVideo) setIsCamOff(true)
       localTracksRef.current = tracks
       tracks.forEach(track => {
         room.localParticipant?.publishTrack(track)
@@ -312,7 +326,7 @@ export function useLiveKitRoom() {
         id: localSid,
         displayName,
         stream: localStream,
-        isMuted: false, isVideoOff: false, isSpeaking: false,
+        isMuted: false, isVideoOff: !hasVideo, isSpeaking: false,
         raisedHand: false, isHost: false, isLocal: true,
       }]
 

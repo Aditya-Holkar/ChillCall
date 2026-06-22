@@ -17,3 +17,17 @@ export async function getUserMediaWithRetry(constraints, maxRetries = 5, delay =
   }
   throw new Error('Could not start video source')
 }
+
+export async function getUserMediaBestEffort() {
+  try {
+    const stream = await getUserMediaWithRetry({ video: true, audio: true })
+    return { stream, hasVideo: true }
+  } catch {
+    try {
+      const stream = await getUserMediaWithRetry({ audio: true })
+      return { stream, hasVideo: false }
+    } catch (err) {
+      return { stream: null, hasVideo: false, error: err }
+    }
+  }
+}

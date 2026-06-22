@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { getUserMediaWithRetry } from '../lib/media'
+import { getUserMediaBestEffort } from '../lib/media'
 
 export function useMediaDevices() {
   const [devices, setDevices] = useState({ cameras: [], mics: [] })
@@ -35,10 +35,7 @@ export function useMediaDevices() {
   const startPreview = useCallback(async () => {
     stopStream()
     try {
-      const s = await getUserMediaWithRetry({
-        video: selectedCam ? { deviceId: { exact: selectedCam } } : true,
-        audio: selectedMic ? { deviceId: { exact: selectedMic } } : true,
-      })
+      const { stream: s } = await getUserMediaBestEffort()
       streamRef.current = s
       setPreviewStream(s)
       await enumerate()
