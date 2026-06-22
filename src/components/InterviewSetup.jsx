@@ -57,7 +57,7 @@ export default function InterviewSetup({ config, setConfig, onStart, onClose, pa
   }
 
   return (
-    <div className="w-full sm:w-96 flex flex-col bg-coral-50 dark:bg-coral-900 border-l border-coral-200 dark:border-coral-800">
+    <div className="w-full sm:w-96 flex flex-col bg-coral-50 dark:bg-coral-900 border-l border-coral-200 dark:border-coral-800 relative z-10">
       <div className="flex items-center justify-between px-4 py-3 border-b border-coral-200 dark:border-coral-800">
         <h3 className="font-semibold text-coral-800 dark:text-coral-50 text-sm flex items-center gap-2">
           <Bot size={16} className="text-coral-300" /> AI Interview Setup

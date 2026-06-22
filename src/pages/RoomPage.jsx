@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams, useLocation, useNavigate } from 'react-router-dom'
+import { Copy, Check } from 'lucide-react'
 import { usePeerRoom } from '../hooks/usePeerRoom'
 import { useLiveKitRoom } from '../hooks/useLiveKitRoom'
 import { useAIBot } from '../hooks/useAIBot'
@@ -24,6 +25,8 @@ function RoomContent({ mode, roomId, action, nickname }) {
   const [recordingBlob, setRecordingBlob] = useState(null)
   const [joinStarted, setJoinStarted] = useState(false)
   const [initError, setInitError] = useState(null)
+  const [copied, setCopied] = useState(false)
+  const [resolvedRoomId, setResolvedRoomId] = useState(roomId && roomId !== 'new' ? roomId : '')
   const pttRef = useRef(false)
   const leftRef = useRef(false)
 
@@ -35,9 +38,11 @@ function RoomContent({ mode, roomId, action, nickname }) {
       try {
         if (action === 'create') {
           const id = await room.createRoom(nickname)
+          setResolvedRoomId(id)
           window.history.replaceState(null, '', `/room/${mode}/${roomId === 'new' ? id : roomId}`)
         } else {
           await room.joinRoom(roomId, nickname)
+          setResolvedRoomId(roomId)
         }
       } catch (err) {
         const errName = err.name ? `${err.name}: ` : ''
@@ -79,6 +84,14 @@ function RoomContent({ mode, roomId, action, nickname }) {
       a.click()
       URL.revokeObjectURL(url)
       setRecordingBlob(null)
+    }
+  }
+
+  const handleCopyRoomId = () => {
+    if (resolvedRoomId) {
+      navigator.clipboard.writeText(resolvedRoomId)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1500)
     }
   }
 
@@ -140,6 +153,19 @@ function RoomContent({ mode, roomId, action, nickname }) {
           blob={recordingBlob}
           onDownload={handleDownloadRecording}
         />
+
+        {resolvedRoomId && (
+          <div className="absolute top-4 right-4 sm:right-auto sm:left-4 sm:top-16 z-10 flex items-center gap-2 px-3 py-1.5 rounded-full bg-coral-900/70 text-coral-200 text-xs font-medium shadow-lg border border-coral-700/50">
+            <span className="truncate max-w-[100px] sm:max-w-[150px]">Room: {resolvedRoomId}</span>
+            <button
+              onClick={handleCopyRoomId}
+              className="p-0.5 rounded hover:bg-coral-700/50 text-coral-300 hover:text-coral-50 transition cursor-pointer"
+              title="Copy room ID"
+            >
+              {copied ? <Check size={12} /> : <Copy size={12} />}
+            </button>
+          </div>
+        )}
 
         <VideoGrid
           participants={room.participants}
