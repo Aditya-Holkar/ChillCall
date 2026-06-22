@@ -40,7 +40,8 @@ function RoomContent({ mode, roomId, action, nickname }) {
           await room.joinRoom(roomId, nickname)
         }
       } catch (err) {
-        setInitError(err.message || 'Failed to create or join room')
+        const errName = err.name ? `${err.name}: ` : ''
+        setInitError(`${errName}${err.message || 'Failed to create or join room'}`)
       }
     }
     init()
@@ -83,18 +84,47 @@ function RoomContent({ mode, roomId, action, nickname }) {
 
   const displayError = initError || room.error
   if (displayError) {
+    const errLower = displayError.toLowerCase()
+    let tip = ''
+    if (errLower.startsWith('notallowederror')) {
+      tip = 'Camera/microphone permission was denied. Check your browser/phone settings and ensure camera & mic are allowed for this site. Clear site permissions and try again, or restart your browser.'
+    } else if (errLower.startsWith('notreadableerror')) {
+      tip = 'Your camera or microphone is being used by another app or tab. Close other apps/tabs using the camera/mic and try again. On mobile, make sure no other app is accessing the camera.'
+    } else if (errLower.startsWith('notfounderror')) {
+      tip = 'No camera or microphone detected. Plug in a device and try again. On mobile, ensure your device has a working camera and mic.'
+    } else if (errLower.startsWith('aborterror')) {
+      tip = 'Something interrupted the connection. Please try again.'
+    } else if (errLower.startsWith('securityerror')) {
+      tip = 'Media access requires a secure connection (HTTPS). This site is using HTTPS, so try clearing site permissions in your browser settings and reloading.'
+    } else if (errLower.includes('permission') || errLower.includes('denied')) {
+      tip = 'Camera/microphone permission was denied. Check your browser settings and ensure camera & mic are allowed for this site.'
+    } else if (errLower.includes('could not connect') || errLower.includes('peer') || errLower.includes('network')) {
+      tip = 'Could not connect to the signaling server. Check your internet connection and try again.'
+    } else if (mode === 'livekit' && (errLower.includes('token') || errLower.includes('env') || errLower.includes('key') || errLower.includes('livekit'))) {
+      tip = 'LiveKit configuration is missing. Set VITE_LIVEKIT_URL, VITE_LIVEKIT_API_KEY, and VITE_LIVEKIT_API_SECRET during build, or try PeerJS mode.'
+    } else {
+      tip = mode === 'livekit'
+        ? 'Check that VITE_LIVEKIT_URL, VITE_LIVEKIT_API_KEY, VITE_LIVEKIT_API_SECRET are set during build. Try PeerJS mode instead.'
+        : 'Make sure camera/microphone permissions are granted in your browser settings. On mobile, also ensure no other app is using the camera/mic. Try clearing site data and reloading the page.'
+    }
+
     return (
-      <div className="min-h-screen bg-coral-900 flex items-center justify-center">
-        <div className="text-center max-w-md">
-          <p className="text-red-400 mb-2">Failed to connect</p>
-          <p className="text-coral-200 text-sm mb-4">{displayError}</p>
-          <p className="text-coral-400 text-xs mb-4">
-            Make sure{' '}
-            {mode === 'livekit'
-              ? 'LiveKit env vars (VITE_LIVEKIT_URL, VITE_LIVEKIT_API_KEY, VITE_LIVEKIT_API_SECRET) are set during build. Try PeerJS mode instead.'
-              : 'camera/microphone permissions are granted. If using HTTPS, permissions are required.'}
-          </p>
-          <button onClick={handleHangup} className="px-4 py-2 bg-coral-300 text-coral-50 rounded-lg cursor-pointer">Go Back</button>
+      <div className="min-h-screen bg-coral-900 flex items-center justify-center p-4">
+        <div className="text-center max-w-md w-full">
+          <p className="text-red-400 mb-2 font-semibold">Failed to connect</p>
+          <p className="text-coral-200 text-sm mb-4 break-words">{displayError}</p>
+          <div className="bg-coral-800/50 rounded-lg p-3 mb-4 text-left">
+            <p className="text-coral-300 text-xs font-medium mb-1">Possible fix:</p>
+            <p className="text-coral-100 text-sm">{tip}</p>
+          </div>
+          <div className="flex gap-2 justify-center">
+            <button onClick={() => window.location.reload()} className="px-4 py-2 bg-coral-500 hover:bg-coral-400 text-coral-50 rounded-lg cursor-pointer text-sm transition">
+              Retry
+            </button>
+            <button onClick={handleHangup} className="px-4 py-2 bg-coral-700 hover:bg-coral-600 text-coral-50 rounded-lg cursor-pointer text-sm transition">
+              Go Back
+            </button>
+          </div>
         </div>
       </div>
     )

@@ -14,21 +14,24 @@ export default function VideoGrid({ participants, speakerLayout, spotlightId, on
     )
   }
 
+  const cols = Math.min(Math.ceil(Math.sqrt(allTiles.length)), 3)
+  const rows = Math.ceil(allTiles.length / cols)
+
   return (
-    <div className="flex-1 p-2 min-h-0 min-w-0">
+    <div className="flex-1 p-1 sm:p-2 min-h-0 min-w-0">
       {speakerLayout === 'speaker' && spotlighted ? (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 h-full">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-1 sm:gap-2 h-full">
           <div className="lg:col-span-2 min-h-0">
             <VideoTile participant={spotlighted} onSpotlight={onSpotlight} />
           </div>
-          <div className="flex flex-col gap-2 overflow-y-auto max-h-full">
+          <div className="flex flex-col gap-1 sm:gap-2 overflow-y-auto max-h-full">
             {others.map(p => (
-              <div key={p.id} className="h-32 lg:h-40 shrink-0">
+              <div key={p.id} className="h-24 sm:h-32 lg:h-40 shrink-0">
                 <VideoTile participant={p} onSpotlight={onSpotlight} />
               </div>
             ))}
             {bot && (
-              <div key="ai-bot" className="h-32 lg:h-40 shrink-0">
+              <div key="ai-bot" className="h-24 sm:h-32 lg:h-40 shrink-0">
                 <BotTile bot={bot} />
               </div>
             )}
@@ -36,10 +39,10 @@ export default function VideoGrid({ participants, speakerLayout, spotlightId, on
         </div>
       ) : (
         <div
-          className="grid gap-2 h-full min-h-0"
+          className="grid gap-1 sm:gap-2 h-full min-h-0"
           style={{
-            gridTemplateColumns: `repeat(${Math.min(Math.ceil(Math.sqrt(allTiles.length)), 4)}, 1fr)`,
-            gridTemplateRows: `repeat(${Math.ceil(allTiles.length / Math.min(Math.ceil(Math.sqrt(allTiles.length)), 4))}, 1fr)`,
+            gridTemplateColumns: `repeat(${cols}, 1fr)`,
+            gridTemplateRows: `repeat(${rows}, 1fr)`,
           }}
         >
           {allTiles.map(p => {

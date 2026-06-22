@@ -2,7 +2,7 @@ import { X, MicOff, CameraOff, VolumeX, Crown } from 'lucide-react'
 
 export default function ParticipantsSidebar({ participants, onClose, onMuteParticipant, isHost }) {
   return (
-    <div className="w-64 flex flex-col bg-coral-50 dark:bg-coral-900 border-l border-coral-200 dark:border-coral-800">
+    <div className="w-full sm:w-64 flex flex-col bg-coral-50 dark:bg-coral-900 border-l border-coral-200 dark:border-coral-800">
       <div className="flex items-center justify-between px-4 py-3 border-b border-coral-200 dark:border-coral-800">
         <h3 className="font-semibold text-coral-800 dark:text-coral-50 text-sm">
           Participants ({participants.length})

@@ -26,7 +26,7 @@ export default function Chat({ messages, onSendMessage, onSendFile, onSendReacti
   }
 
   return (
-    <div className="w-80 flex flex-col bg-coral-50 dark:bg-coral-900 border-l border-coral-200 dark:border-coral-800">
+    <div className="w-full sm:w-80 flex flex-col bg-coral-50 dark:bg-coral-900 border-l border-coral-200 dark:border-coral-800">
       <div className="flex items-center justify-between px-4 py-3 border-b border-coral-200 dark:border-coral-800">
         <h3 className="font-semibold text-coral-800 dark:text-coral-50 text-sm">Chat</h3>
         <button onClick={onClose} className="p-1 rounded hover:bg-coral-100 dark:hover:bg-coral-800 text-coral-500 cursor-pointer">

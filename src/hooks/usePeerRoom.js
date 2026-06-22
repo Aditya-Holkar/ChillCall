@@ -153,15 +153,15 @@ export function usePeerRoom() {
     setError(null)
     localStorage.setItem('chillcall-nick', displayName)
 
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+    localStreamRef.current = stream
+
     const roomId = Math.random().toString(36).substring(2, 8)
     peerRef.current = new Peer(roomId)
 
     return new Promise((resolve, reject) => {
-      peerRef.current.on('open', async () => {
+      peerRef.current.on('open', () => {
         try {
-          const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-          localStreamRef.current = stream
-
           participantsRef.current = [{
             id: peerRef.current.id,
             stream,
@@ -207,7 +207,9 @@ export function usePeerRoom() {
           reject(err)
         }
       })
-      peerRef.current.on('error', reject)
+      peerRef.current.on('error', err => {
+        reject(err)
+      })
     })
   }, [handleDataMessage, updateParticipants])
 
@@ -215,15 +217,15 @@ export function usePeerRoom() {
     setError(null)
     localStorage.setItem('chillcall-nick', displayName)
 
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+    localStreamRef.current = stream
+
     const myId = Math.random().toString(36).substring(2, 12)
     peerRef.current = new Peer(myId)
 
     return new Promise((resolve, reject) => {
-      peerRef.current.on('open', async () => {
+      peerRef.current.on('open', () => {
         try {
-          const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-          localStreamRef.current = stream
-
           participantsRef.current = [{
             id: myId,
             stream,
