@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { getUserMediaWithRetry } from '../lib/media'
 
 export function useMediaDevices() {
@@ -6,6 +6,15 @@ export function useMediaDevices() {
   const [selectedCam, setSelectedCam] = useState('')
   const [selectedMic, setSelectedMic] = useState('')
   const [previewStream, setPreviewStream] = useState(null)
+  const streamRef = useRef(null)
+
+  const stopStream = useCallback(() => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(t => t.stop())
+      streamRef.current = null
+      setPreviewStream(null)
+    }
+  }, [])
 
   const enumerate = useCallback(async () => {
     try {
@@ -24,12 +33,13 @@ export function useMediaDevices() {
   }, [enumerate])
 
   const startPreview = useCallback(async () => {
-    stopPreview()
+    stopStream()
     try {
       const s = await getUserMediaWithRetry({
         video: selectedCam ? { deviceId: { exact: selectedCam } } : true,
         audio: selectedMic ? { deviceId: { exact: selectedMic } } : true,
       })
+      streamRef.current = s
       setPreviewStream(s)
       await enumerate()
       return s
@@ -37,20 +47,17 @@ export function useMediaDevices() {
       console.error('Preview error:', err)
       return null
     }
-  }, [selectedCam, selectedMic, enumerate])
+  }, [selectedCam, selectedMic, enumerate, stopStream])
 
   const stopPreview = useCallback(() => {
-    if (previewStream) {
-      previewStream.getTracks().forEach(t => t.stop())
-      setPreviewStream(null)
-    }
-  }, [previewStream])
+    stopStream()
+  }, [stopStream])
 
   useEffect(() => {
     return () => {
-      if (previewStream) previewStream.getTracks().forEach(t => t.stop())
+      stopStream()
     }
-  }, [])
+  }, [stopStream])
 
   return {
     devices,

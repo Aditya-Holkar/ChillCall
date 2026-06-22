@@ -2,7 +2,7 @@ export function sleep(ms) {
   return new Promise(r => setTimeout(r, ms))
 }
 
-export async function getUserMediaWithRetry(constraints, maxRetries = 3, delay = 500) {
+export async function getUserMediaWithRetry(constraints, maxRetries = 5, delay = 300) {
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       const stream = await navigator.mediaDevices.getUserMedia(constraints)
