@@ -18,7 +18,7 @@ export default function VideoGrid({ participants, speakerLayout, spotlightId, on
   const rows = Math.ceil(allTiles.length / cols)
 
   return (
-    <div className="flex-1 min-h-0 min-w-0">
+    <div className="flex-1 p-1 sm:p-3 min-h-0 min-w-0">
       {speakerLayout === 'speaker' && spotlighted ? (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-1 sm:gap-2 h-full">
           <div className="lg:col-span-2 min-h-0">
