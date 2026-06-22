@@ -23,6 +23,7 @@ function RoomContent({ mode, roomId, action, nickname }) {
   const [pushToTalk, setPushToTalk] = useState(false)
   const [recordingBlob, setRecordingBlob] = useState(null)
   const [joinStarted, setJoinStarted] = useState(false)
+  const [initError, setInitError] = useState(null)
   const pttRef = useRef(false)
   const leftRef = useRef(false)
 
@@ -39,7 +40,7 @@ function RoomContent({ mode, roomId, action, nickname }) {
           await room.joinRoom(roomId, nickname)
         }
       } catch (err) {
-        navigate('/', { replace: true })
+        setInitError(err.message || 'Failed to create or join room')
       }
     }
     init()
@@ -80,11 +81,19 @@ function RoomContent({ mode, roomId, action, nickname }) {
     }
   }
 
-  if (room.error) {
+  const displayError = initError || room.error
+  if (displayError) {
     return (
       <div className="min-h-screen bg-coral-900 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-red-400 mb-4">Failed to connect: {room.error}</p>
+        <div className="text-center max-w-md">
+          <p className="text-red-400 mb-2">Failed to connect</p>
+          <p className="text-coral-200 text-sm mb-4">{displayError}</p>
+          <p className="text-coral-400 text-xs mb-4">
+            Make sure{' '}
+            {mode === 'livekit'
+              ? 'LiveKit env vars (VITE_LIVEKIT_URL, VITE_LIVEKIT_API_KEY, VITE_LIVEKIT_API_SECRET) are set during build. Try PeerJS mode instead.'
+              : 'camera/microphone permissions are granted. If using HTTPS, permissions are required.'}
+          </p>
           <button onClick={handleHangup} className="px-4 py-2 bg-coral-300 text-coral-50 rounded-lg cursor-pointer">Go Back</button>
         </div>
       </div>

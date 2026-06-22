@@ -70,13 +70,13 @@ export default function InterviewSetup({ config, setConfig, onStart, onClose, pa
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         <div>
           <label className="block text-xs font-medium text-coral-500 mb-1">Participants</label>
-          <div className="flex flex-wrap gap-1">
-            {participants.filter(p => !p.isLocal).map(p => (
-              <span key={p.id} className="px-2 py-0.5 text-xs rounded-full bg-coral-100 dark:bg-coral-800/30 text-coral-600 dark:text-coral-300">
-                {p.displayName}
-              </span>
-            ))}
-          </div>
+            <div className="flex flex-wrap gap-1">
+              {participants.map(p => (
+                <span key={p.id} className="px-2 py-0.5 text-xs rounded-full bg-coral-100 dark:bg-coral-800/30 text-coral-600 dark:text-coral-300">
+                  {p.displayName} {p.isLocal && '(You)'}
+                </span>
+              ))}
+            </div>
         </div>
 
         <div>
@@ -197,7 +197,7 @@ export default function InterviewSetup({ config, setConfig, onStart, onClose, pa
       <div className="p-4 border-t border-coral-200 dark:border-coral-800">
         <button
           onClick={handleStart}
-          disabled={participants.filter(p => !p.isLocal).length === 0}
+          disabled={participants.length === 0}
           className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-coral-300 hover:bg-coral-400 disabled:bg-coral-200 dark:disabled:bg-coral-700 text-coral-50 font-medium transition cursor-pointer disabled:cursor-not-allowed"
         >
           <Sparkles size={18} />

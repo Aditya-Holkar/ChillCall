@@ -43,8 +43,10 @@ export function useAIBot(room) {
 
   const findParticipantStream = useCallback((name) => {
     const p = room.participants?.find(p => p.displayName === name)
-    return p?.stream || null
-  }, [room.participants])
+    if (p?.stream) return p.stream
+    if (room.localStream) return room.localStream
+    return null
+  }, [room.participants, room.localStream])
 
   const startListening = useCallback((participantName) => {
     return new Promise((resolve) => {
@@ -320,7 +322,6 @@ export function useAIBot(room) {
 
   const startInterview = useCallback(async () => {
     const participantNames = room.participants
-      ?.filter(p => !p.isLocal)
       ?.map(p => p.displayName) || []
 
     runBot(config, participantNames)

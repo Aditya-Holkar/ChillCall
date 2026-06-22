@@ -5,7 +5,7 @@ import HomePage from './pages/HomePage'
 import RoomPage from './pages/RoomPage'
 
 function App() {
-  const [mode, setMode] = useState(() => localStorage.getItem('chillcall-mode') || 'livekit')
+  const [mode, setMode] = useState(() => localStorage.getItem('chillcall-mode') || 'peerjs')
 
   const handleModeChange = (newMode) => {
     setMode(newMode)
