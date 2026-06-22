@@ -14,7 +14,7 @@ export default function VideoTile({ participant, isLocal, isSpotlight, onSpotlig
 
   return (
     <div
-      className={`relative rounded-xl overflow-hidden bg-coral-800 group ${
+      className={`relative w-full h-full rounded-xl overflow-hidden bg-coral-800 group ${
         participant.isSpeaking ? 'ring-2 ring-green-400' : ''
       } ${isSpotlight ? 'col-span-2 row-span-2' : ''}`}
     >

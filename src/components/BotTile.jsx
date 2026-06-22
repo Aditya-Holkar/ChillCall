@@ -20,7 +20,7 @@ export default function BotTile({ bot }) {
   const Icon = cfg.icon
 
   return (
-    <div className="relative rounded-xl overflow-hidden bg-gradient-to-br from-coral-800 to-coral-900 flex flex-col items-center justify-center h-full">
+    <div className="relative w-full h-full rounded-xl overflow-hidden bg-gradient-to-br from-coral-800 to-coral-900 flex flex-col items-center justify-center">
       <div className="flex flex-col items-center gap-2">
         <div className={`w-16 h-16 rounded-full ${cfg.color} flex items-center justify-center shadow-lg`}>
           <Icon size={28} className="text-coral-50" />

@@ -178,12 +178,30 @@ export function useAIBot(room) {
     botRunningRef.current = true
     cancelRef.current = false
 
-    const questions = cfg.questions.length > 0
+    const DEFAULT_QUESTIONS = [
+      'Tell me about yourself and your background.',
+      'What are your greatest strengths and weaknesses?',
+      'Describe a challenging project you worked on and how you handled it.',
+      'Where do you see yourself in five years?',
+      'Why are you interested in this role?',
+      'Describe a time you worked in a team to achieve a goal.',
+      'How do you handle pressure or stressful situations?',
+      'What is your biggest professional achievement?',
+      'Tell me about a time you failed and what you learned from it.',
+      'What skills make you a good fit for this position?',
+    ]
+
+    let questions = cfg.questions.length > 0
       ? cfg.questions
       : await (async () => {
           const qText = await generateQuestionsFromContext(cfg, cfg.questionCount)
-          return qText.split('\n').filter(l => l.trim()).map(l => l.replace(/^\d+[. )]\s*/, ''))
+          const parsed = qText.split('\n').filter(l => l.trim()).map(l => l.replace(/^\d+[. )]\s*/, ''))
+          return parsed.length > 0 ? parsed : DEFAULT_QUESTIONS.slice(0, cfg.questionCount || 5)
         })()
+
+    if (!questions || questions.length === 0) {
+      questions = DEFAULT_QUESTIONS.slice(0, cfg.questionCount || 5)
+    }
 
     const pData = participantList.map(name => ({ name, qAndA: [] }))
     setParticipantsData(pData)
@@ -191,6 +209,14 @@ export function useAIBot(room) {
     const interviewerState = {
       questionIndex: 0,
       allAskedQuestions: [],
+    }
+
+    if (participantList.length === 0) {
+      setBotStatus('No participants found. Try again when connected.')
+      await speak(`I see no participants in the room. Please make sure you are connected and try again.`)
+      setState(STATES.DONE)
+      botRunningRef.current = false
+      return
     }
 
     setState(STATES.STARTING)

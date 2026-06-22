@@ -152,6 +152,17 @@ export default function InterviewController({ bot, onClose }) {
           )}
         </div>
       )}
+
+      {bot.state === 'done' && (
+        <div className="p-4 border-t border-coral-200 dark:border-coral-800">
+          <button
+            onClick={onClose}
+            className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-coral-300 hover:bg-coral-400 text-coral-50 font-medium text-sm cursor-pointer"
+          >
+            <X size={16} /> Close Interview
+          </button>
+        </div>
+      )}
     </div>
   )
 }

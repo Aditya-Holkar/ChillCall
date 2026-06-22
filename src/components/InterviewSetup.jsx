@@ -197,8 +197,7 @@ export default function InterviewSetup({ config, setConfig, onStart, onClose, pa
       <div className="p-4 border-t border-coral-200 dark:border-coral-800">
         <button
           onClick={handleStart}
-          disabled={participants.length === 0}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-coral-300 hover:bg-coral-400 disabled:bg-coral-200 dark:disabled:bg-coral-700 text-coral-50 font-medium transition cursor-pointer disabled:cursor-not-allowed"
+          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-coral-300 hover:bg-coral-400 text-coral-50 font-medium transition cursor-pointer"
         >
           <Sparkles size={18} />
           Start AI Interview

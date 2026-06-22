@@ -15,7 +15,7 @@ export default function VideoGrid({ participants, speakerLayout, spotlightId, on
   }
 
   return (
-    <div className="flex-1 p-2">
+    <div className="flex-1 p-2 min-h-0 min-w-0">
       {speakerLayout === 'speaker' && spotlighted ? (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 h-full">
           <div className="lg:col-span-2 min-h-0">
@@ -36,7 +36,7 @@ export default function VideoGrid({ participants, speakerLayout, spotlightId, on
         </div>
       ) : (
         <div
-          className="grid gap-2 h-full"
+          className="grid gap-2 h-full min-h-0"
           style={{
             gridTemplateColumns: `repeat(${Math.min(Math.ceil(Math.sqrt(allTiles.length)), 4)}, 1fr)`,
             gridTemplateRows: `repeat(${Math.ceil(allTiles.length / Math.min(Math.ceil(Math.sqrt(allTiles.length)), 4))}, 1fr)`,
